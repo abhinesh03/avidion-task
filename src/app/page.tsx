@@ -32,9 +32,10 @@ export default function Home() {
         currentScreen={currentScreen}
         setCurrentScreen={setCurrentScreen}
         sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
-      />
-      <div className="main-content">
+        setSidebarOpen={setSidebarOpen} mobileMenuOpen={false} setMobileMenuOpen={function (open: boolean): void {
+          throw new Error('Function not implemented.');
+        } }      />
+      <div className="main-content" style={{paddingTop: '30px'}}>
         {currentScreen === 'dashboard' && <Dashboard campaigns={campaigns} />}
         {currentScreen === 'campaigns' && (
           <CampaignsList campaigns={campaigns} setCampaigns={setCampaigns} />

@@ -2,17 +2,19 @@
 'use client';
 
 import React from 'react';
-import { Home, Target, Settings } from 'lucide-react';
+import { Home, Target, Settings, Menu, X } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
-interface SidebarProps {
+interface HeaderProps {
   currentScreen: 'landing' | 'dashboard' | 'campaigns' | 'settings';
   setCurrentScreen: (screen: 'landing' | 'dashboard' | 'campaigns' | 'settings') => void;
+  mobileMenuOpen: boolean;
+  setMobileMenuOpen: (open: boolean) => void;
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
 }
 
-export default function Sidebar({ currentScreen, setCurrentScreen, sidebarOpen, setSidebarOpen }: SidebarProps) {
+export default function Header({ currentScreen, setCurrentScreen, mobileMenuOpen, setMobileMenuOpen }: HeaderProps) {
   const NavItem = ({ icon: Icon, label, active, onClick }: {
     icon: React.ElementType;
     label: string;
@@ -28,32 +30,64 @@ export default function Sidebar({ currentScreen, setCurrentScreen, sidebarOpen, 
     </button>
   );
 
+  
+
   return (
     <>
-      {/* Mobile overlay */}
-      {sidebarOpen && (
-        <div
-          className={styles.overlay}
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
-      {/* Sidebar */}
-      <aside className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ''}`}>
-        <div className={styles.sidebarContent}>
+      {/* Header */}
+      <header className={styles.header}>
+        <div className={styles.headerContent}>
+          {/* Logo */}
           <div className={styles.logo}>
             <Target className={styles.logoIcon} />
             <span className={styles.logoText}>Avidion</span>
           </div>
 
-          <nav className={styles.nav}>
+          {/* Desktop Navigation */}
+          <nav className={styles.desktopNav}>
+            <NavItem
+              icon={Home}
+              label="Dashboard"
+              active={currentScreen === 'dashboard'}
+              onClick={() => setCurrentScreen('dashboard')}
+            />
+            <NavItem
+              icon={Target}
+              label="Campaigns"
+              active={currentScreen === 'campaigns'}
+              onClick={() => setCurrentScreen('campaigns')}
+            />
+            <NavItem
+              icon={Settings}
+              label="Settings"
+              active={currentScreen === 'settings'}
+              onClick={() => setCurrentScreen('settings')}
+            />
+          </nav>
+
+          {/* Mobile Menu Button */}
+          <button
+            className={styles.mobileMenuButton}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? (
+              <X className={styles.menuIcon} />
+            ) : (
+              <Menu className={styles.menuIcon} />
+            )}
+          </button>
+        </div>
+
+        {/* Mobile Navigation */}
+        {mobileMenuOpen && (
+          <nav className={styles.mobileNav}>
             <NavItem
               icon={Home}
               label="Dashboard"
               active={currentScreen === 'dashboard'}
               onClick={() => {
                 setCurrentScreen('dashboard');
-                setSidebarOpen(false);
+                setMobileMenuOpen(false);
               }}
             />
             <NavItem
@@ -62,7 +96,7 @@ export default function Sidebar({ currentScreen, setCurrentScreen, sidebarOpen, 
               active={currentScreen === 'campaigns'}
               onClick={() => {
                 setCurrentScreen('campaigns');
-                setSidebarOpen(false);
+                setMobileMenuOpen(false);
               }}
             />
             <NavItem
@@ -71,12 +105,20 @@ export default function Sidebar({ currentScreen, setCurrentScreen, sidebarOpen, 
               active={currentScreen === 'settings'}
               onClick={() => {
                 setCurrentScreen('settings');
-                setSidebarOpen(false);
+                setMobileMenuOpen(false);
               }}
             />
           </nav>
-        </div>
-      </aside>
+        )}
+      </header>
+
+      {/* Mobile overlay */}
+      {mobileMenuOpen && (
+        <div
+          className={styles.overlay}
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
     </>
   );
 }
